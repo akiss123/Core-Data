@@ -1,0 +1,66 @@
+// Core Data
+    // 获取程序唯一NSManagedObjectContext
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    // 初始化一个 NSManagedObject
+    ContactInformation *information = [NSEntityDescription insertNewObjectForEntityForName:[ContactInformation entityName] inManagedObjectContext:context];
+    //获取文本输入框信息
+    NSString *name = [(UITextField *)[self.view viewWithTag:200] text];
+    NSString *age = [(UITextField *)[self.view viewWithTag:201] text];
+    NSString *sex = [(UITextField *)[self.view viewWithTag:202] text];
+    NSString *birthday = [(UITextField *)[self.view viewWithTag:203] text];
+    NSString *telephone = [(UITextField *)[self.view viewWithTag:204] text];
+    NSString *address = [(UITextField *)[self.view viewWithTag:205] text];
+    
+    //配置对象
+    [information setName:name];
+    [information setAge:age];
+    [information setSex:sex];
+    [information setBirthday:birthday];
+    [information setTelephone:telephone];
+    [information setAddress:address];
+    
+    //保存
+    NSError *error = nil;
+    BOOL success = NO;
+    success = [context save:&error];
+    NSAssert(success, @"insert object failed with error message %@",[error localizedDescription]);
+-------------------------------------------------------
+// Core Data-------读取
+ 
+    // 获取程序唯一NSManagedObjectContext
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    //初始化抓取请求
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[ContactInformation entityName]];
+    //谓词
+//键值编码 KVC
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == 'lanjun'"];@"age > '22'"
+    [request setPredicate:predicate];
+
+    // 执行抓取请求
+    NSError *error = nil;
+    NSArray *objects = [context executeFetchRequest:request error:&error];
+    // 获取抓取结果数组，打印
+    if (objects && [objects count]>0) {
+        [objects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            NSLog(@"%@",obj);
+        }];
+    }
+------------------------------------------------------------------------
+// Core Data-------删除
+    // 获取程序唯一NSManagedObjectContext
+    NSManagedObjectContext *context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    // 读取待删除的数据
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[ContactInformation entityName]];
+    //执行抓取请求
+    NSError *error = nil;
+    NSArray *objects = [context executeFetchRequest:request error:&error];
+    if (objects && [objects count]>0) {
+        [objects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            //删除
+            [context deleteObject:obj];
+        }];
+    }
+    //保存
+    BOOL success = [context save:&error];
+    NSAssert(success, @"delete object failed with error message %@",[error localizedDescription]);
