@@ -1,0 +1,8 @@
+// 拿到 沙盒 APP中Documents 路径
+NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+
+//Documents 文件下 创建一个文件夹
+NSString *testDirectory = [documentsDirectory stringByAppendingPathComponent:@"test"];
+
+// UIImage  转 NSData
+NSData *imageData = UIImagePNGRepresentation(image);
